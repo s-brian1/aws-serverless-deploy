@@ -1,0 +1,22 @@
+{
+  "name": "aws-serverless-url-shortener",
+  "version": "0.1.0",
+  "description": "A simple URL shortener deployed with Serverless Framework and CI via GitHub Actions",
+  "main": "src/handler.js",
+  "scripts": {
+    "test": "jest --runInBand",
+    "start": "sls offline",
+    "deploy": "npx serverless deploy"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "aws-sdk": "^2.1370.0",
+    "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "jest": "^29.0.0",
+    "serverless": "^3.40.0",
+    "serverless-offline": "^11.0.0"
+  }
+}

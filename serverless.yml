@@ -1,0 +1,49 @@
+service: aws-serverless-url-shortener
+
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  region: us-east-1
+  environment:
+    TABLE_NAME: ${self:service}-urls-${sls:stage, 'dev'}
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:PutItem
+            - dynamodb:GetItem
+          Resource: "arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TABLE_NAME}"
+
+plugins:
+  - serverless-offline
+
+functions:
+  create:
+    handler: src/handler.create
+    events:
+      - http:
+          path: shorten
+          method: post
+  redirect:
+    handler: src/handler.redirect
+    events:
+      - http:
+          path: {id}
+          method: get
+
+resources:
+  Resources:
+    UrlsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.environment.TABLE_NAME}
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
